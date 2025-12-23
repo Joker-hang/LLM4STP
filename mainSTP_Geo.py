@@ -35,8 +35,6 @@ with open('config.yaml', 'r') as f:
 args = DictAsObject(config)
 ades = []
 fdes = []
-mses = []
-maes = []
 
 if __name__ == '__main__':
 
@@ -222,15 +220,11 @@ if __name__ == '__main__':
         best_model_path = path + '/' + 'checkpoint.pth'
         model.load_state_dict(torch.load(best_model_path))
         print("------------------------------------")
-        ade, fde, mse, mae = test(model, test_set, test_loader, args, device, ii)
+        ade, fde = test(model, test_set, test_loader, args, device, ii)
         ades.append(ade)
         fdes.append(fde)
-        mses.append(mse)
-        maes.append(mae)
 
     ades = np.array(ades)
     fdes = np.array(fdes)
     print("ade_mean = {:.4f}".format(np.mean(ades)))
     print("fde_mean = {:.4f}".format(np.mean(fdes)))
-    print("mse_mean = {:.4f}".format(np.mean(mses)))
-    print("mae_mean = {:.4f}".format(np.mean(maes)))
