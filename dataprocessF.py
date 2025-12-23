@@ -69,19 +69,10 @@ def optimized_processing():
 
     split_idx = int(len(data) * 0.6), int(len(data) * 0.8)
 
-    # data.iloc[:split_idx[0]].to_csv('dataset/TJP/train/TJP.csv',
-    #                                 index=False, header=False)
-    # data.iloc[split_idx[0]:split_idx[1]].to_csv('dataset/TJP/test/TJP.csv',
-    #                                             index=False, header=False)
-    # data.iloc[split_idx[1]:].to_csv('dataset/TJP/val/TJP.csv',
-    #                                 index=False, header=False)
 
 
 if __name__ == "__main__":
-    # Area    Range    Time
-    # Caofeidian Port water area    Longitude: 118°25′E - 118°95′E Latitude: 38°70′N - 39°10′N    June
-    # Chengshan Jiao Promontory    Longitude: 122°50′E - 123°20′E Latitude: 37°16′N - 37°75′N    June
-    # Tianjin Port water area    Longitude: 117°7′E - 118°7′E Latitude: 38°7′N - 39°1′N    June
 
     optimized_processing()
+
 
