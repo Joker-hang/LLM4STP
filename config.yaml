@@ -1,6 +1,5 @@
 model_id: train
 checkpoints: ./checkpoints_STPGeo/
-root_path: ./dataset/traffic/
 data_path: TJP
 data: custom
 features: M
