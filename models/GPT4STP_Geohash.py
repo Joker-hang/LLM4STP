@@ -47,7 +47,6 @@ class GPT4STP(nn.Module):
             self.gpt2.h = self.gpt2.h[:configs.gpt_layers]
             # print("gpt2 = {}".format(self.gpt2))
 
-        # 设置 pad_token
         if self.tokenizer.eos_token:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         else:
@@ -79,8 +78,7 @@ class GPT4STP(nn.Module):
         
         self.input_embedding_layer_geohash = nn.Linear(configs.geohash_size * 2, 32).to(device=device)
         self.geohash_embeddding = nn.Linear(32, configs.d_model).to(device=device)
-
-        # 卷积网络提取高斯分布图特征
+        
         self.gaussian_feature_extractor = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
@@ -181,23 +179,21 @@ class GPT4STP(nn.Module):
         # Extract patches
         # [B, M, N, P]
         x = self.padding_patch_layer(x)
-        # 将输入tensor沿着指定维度分割成多个切片
+        
         x = x.unfold(dimension=-1, size=self.patch_size, step=self.stride)
         x = rearrange(x, 'b m n p -> (b m) n p')
 
         patch_embeddings = self.in_layer(x)
 
-        # 在 patch_embeddings 上进行时间维度特征提取
+        
         patch_embeddings = rearrange(patch_embeddings, '(b m) n d -> (b n) d m', b=B)
-        patch_embeddings = self.time_feature_extractor(patch_embeddings)  # 时间特征提取
+        patch_embeddings = self.time_feature_extractor(patch_embeddings)
         patch_embeddings = rearrange(patch_embeddings, '(b n) d m -> (b m) n d', b=B)
 
-        # 提取高斯分布图特征
         gaussian_features = self.gaussian_feature_extractor(total_gaussian.unsqueeze(1))  # [num_vehicles, 32, 1, 1]
         gaussian_features = gaussian_features.view(gaussian_features.size(0), -1)  # [num_vehicles, 32]
         gaussian_features = self.gaussian_fc(gaussian_features)  # [num_vehicles, d_model]
 
-        # 将高斯分布图特征扩展为与 batch 维度一致
         gaussian_features = gaussian_features.unsqueeze(1).repeat(2, 1, 1)  # [B * num_vehicles, d_model]
 
         input_embedding_geohash = self.input_embedding_layer_geohash(geohash_code)
