@@ -1,2 +1,2 @@
 # LLM4STP
-The code will be available soon
+The code  of "LLM4STP: A large language model-driven multi-feature fusion method for ship trajectory prediction"
